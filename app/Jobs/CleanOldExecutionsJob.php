@@ -13,6 +13,15 @@ class CleanOldExecutionsJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
     
+    public $connection;
+    public $queue;
+    
+    public function __construct()
+    {
+        $this->connection = config('workflow.queue.connection', 'database');
+        $this->queue = config('workflow.queue.name', 'workflows');
+    }
+    
     public function handle(): void
     {
         $daysToKeep = config('workflow.execution_retention_days', 30);

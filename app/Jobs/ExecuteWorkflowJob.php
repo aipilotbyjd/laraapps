@@ -15,6 +15,8 @@ class ExecuteWorkflowJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
     
+    public $connection;
+    public $queue;
     public $timeout = 300;
     public $tries = 3;
     public $backoff = [60, 180, 600];
@@ -24,7 +26,10 @@ class ExecuteWorkflowJob implements ShouldQueue
         public array $inputData = [],
         public string $mode = 'trigger',
         public ?Execution $execution = null
-    ) {}
+    ) {
+        $this->connection = config('workflow.queue.connection', 'database');
+        $this->queue = config('workflow.queue.name', 'workflows');
+    }
     
     public function handle(WorkflowExecutor $executor): void
     {

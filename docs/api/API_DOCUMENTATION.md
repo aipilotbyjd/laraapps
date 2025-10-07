@@ -6,10 +6,10 @@ This document provides comprehensive documentation for the n8n Clone API. All en
 
 ## 🔐 Authentication
 
-All API endpoints require Bearer Token authentication via Laravel Sanctum:
+All API endpoints require Bearer Token authentication via Laravel Passport:
 
 ```
-Authorization: Bearer {your-api-token}
+Authorization: Bearer {your-access-token}
 Accept: application/json
 Content-Type: application/json
 ```
@@ -69,7 +69,7 @@ GET /api/v1/workflows
 
 **Query Parameters:**
 - `page` (int) - Page number (default: 1)
-- `per_page` (int) - Items per page (default: 20, max: 100)
+- `per_page` (int) - Items per page (default: 15, max: 100)
 - `active` (boolean) - Filter by active status
 - `search` (string) - Search by name
 - `tags` (array) - Filter by tag IDs
@@ -118,6 +118,50 @@ POST /api/v1/workflows
 }
 ```
 
+**Example Request Body:**
+```json
+{
+  "name": "HTTP Request Workflow",
+  "description": "A workflow that makes HTTP requests",
+  "active": true,
+  "nodes": [
+    {
+      "id": "1",
+      "name": "Webhook Trigger",
+      "type": "webhook_trigger",
+      "parameters": {
+        "method": "POST"
+      },
+      "position": {"x": 100, "y": 100}
+    },
+    {
+      "id": "2",
+      "name": "HTTP Request",
+      "type": "http_request",
+      "parameters": {
+        "method": "GET",
+        "url": "https://httpbin.org/get",
+        "headers": [],
+        "authentication": "none"
+      },
+      "position": {"x": 300, "y": 100}
+    }
+  ],
+  "connections": [
+    {
+      "source": "1",
+      "target": "2",
+      "sourceOutput": "main",
+      "targetInput": "main"
+    }
+  ],
+  "settings": {
+    "saveExecutionProgress": true,
+    "saveManualExecutions": true
+  }
+}
+```
+
 #### Get Workflow
 ```http
 GET /api/v1/workflows/{id}
@@ -141,7 +185,7 @@ POST /api/v1/workflows/{id}/execute
 **Request Body:**
 ```json
 {
-  "data": {
+  "input_data": {
     "any": "data to pass to workflow"
   }
 }
@@ -336,9 +380,17 @@ PATCH /webhook/{webhookId}
 DELETE /webhook/{webhookId}
 ```
 
-#### Test Webhook
-```http
-POST /api/v1/webhooks/{webhookId}/test
+**Example Webhook Payload:**
+```json
+{
+  "event": "user.created",
+  "data": {
+    "user_id": 123,
+    "name": "John Doe",
+    "email": "john@example.com"
+  },
+  "timestamp": "2023-01-01T12:00:00Z"
+}
 ```
 
 ## 📤 Webhook Payloads
@@ -397,9 +449,9 @@ event=user.created&user_id=123&name=John+Doe&email=john%40example.com
     "from": 1,
     "last_page": 10,
     "path": "...",
-    "per_page": 20,
-    "to": 20,
-    "total": 200
+    "per_page": 15,
+    "to": 15,
+    "total": 150
   }
 }
 ```
@@ -423,13 +475,6 @@ API endpoints are rate-limited:
 - 60 requests per minute for authenticated users
 - 10 requests per minute for unauthenticated requests
 - 1000 requests per hour for webhook endpoints
-
-## 🔌 WebSocket Support (Optional)
-
-Real-time updates via WebSocket:
-- Endpoint: `/ws`
-- Events: `execution.created`, `execution.updated`, `execution.completed`
-- Authentication: Bearer token in connection headers
 
 ## 🛠️ SDK Examples
 
@@ -455,7 +500,7 @@ await fetch('/api/v1/workflows/1/execute', {
     'Content-Type': 'application/json'
   },
   body: JSON.stringify({
-    data: { message: 'Hello World' }
+    input_data: { message: 'Hello World' }
   })
 });
 ```
@@ -477,7 +522,7 @@ workflows = response.json()
 # Execute workflow
 response = requests.post('/api/v1/workflows/1/execute', 
                         headers=headers,
-                        json={'data': {'message': 'Hello World'}})
+                        json={'input_data': {'message': 'Hello World'}})
 ```
 
 ## 🎯 Best Practices

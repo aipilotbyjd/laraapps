@@ -21,7 +21,7 @@ return [
     */
     
     'queue' => [
-        'connection' => env('WORKFLOW_QUEUE_CONNECTION', 'redis'),
+        'connection' => env('WORKFLOW_QUEUE_CONNECTION', 'database'),
         'name' => env('WORKFLOW_QUEUE_NAME', 'workflows'),
     ],
     

@@ -14,10 +14,16 @@ class ResumeExecutionJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
     
+    public $connection;
+    public $queue;
+    
     public function __construct(
         public WaitingExecution $waitingExecution,
         public array $resumeData = []
-    ) {}
+    ) {
+        $this->connection = config('workflow.queue.connection', 'database');
+        $this->queue = config('workflow.queue.name', 'workflows');
+    }
     
     public function handle(WorkflowExecutor $executor): void
     {

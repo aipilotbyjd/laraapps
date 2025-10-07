@@ -23,7 +23,7 @@ use App\Http\Controllers\{
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
@@ -45,7 +45,7 @@ Route::get('/health', function () {
 Route::match(['GET', 'POST', 'PUT', 'PATCH', 'DELETE'], '/webhook/{webhookId}', [WebhookController::class, 'handle']);
 
 // API routes with authentication
-Route::middleware('auth:sanctum')->prefix('v1')->group(function () {
+Route::middleware('auth:api')->prefix('v1')->group(function () {
     
     // Workflows
     Route::apiResource('workflows', WorkflowController::class);

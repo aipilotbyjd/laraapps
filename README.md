@@ -1,61 +1,95 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# n8n Clone - Advanced Workflow Automation Platform
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+A comprehensive, production-ready n8n clone built with Laravel 11/12, featuring workflow automation, scheduled tasks, webhook endpoints, and credential management.
 
-## About Laravel
+## 📚 Documentation
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+Complete documentation is available in the [docs](docs/) folder:
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+- [Documentation Index](docs/README.md) - Start here for complete documentation
+- [API Documentation](docs/api/API_DOCUMENTATION.md) - Complete API reference
+- [Installation Guide](docs/guides/SETUP_INSTALLATION.md) - Setup and installation
+- [Environment Configuration](docs/configuration/ENVIRONMENT_CONFIGURATION.md) - Environment setup
+- [Workflow Node Documentation](docs/nodes/WORKFLOW_NODES.md) - Node system reference
+- [Postman Collection](docs/tools/n8n-clone-postman-collection.json) - Complete API collection for Postman
+- [Queue Worker Script](docs/tools/start-queue-workers.sh) - Shell script to start queue workers
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## 🚀 Features
 
-## Learning Laravel
+- **Workflow Management**: Create, edit, execute, and monitor complex workflows
+- **Node System**: Extensible node architecture with triggers, actions, logic, and transform nodes
+- **Execution Engine**: Asynchronous workflow execution with queue support
+- **API Authentication**: Laravel Passport OAuth2 authentication
+- **Webhook Endpoints**: Public webhook endpoints for external integrations
+- **Credential Management**: Secure credential storage with encryption
+- **Version Control**: Workflow versioning and rollback capabilities
+- **Scheduling**: Cron-based workflow scheduling
+- **Wait Nodes**: Time-based and event-based workflow pausing
+- **Expression Engine**: Support for expressions like `{{$json.field}}`
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+## 📦 Technology Stack
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+- **Backend**: Laravel 12
+- **Authentication**: Laravel Passport (OAuth2)
+- **Queue System**: Database/Redis queue
+- **Database**: SQLite (default) / MySQL / PostgreSQL
+- **API**: RESTful API with JSON responses
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## 🏗️ Architecture
 
-## Laravel Sponsors
+```
+app/
+├── Models/                 # Eloquent models
+│   ├── Workflow.php        # Core workflow model
+│   ├── Execution.php       # Execution tracking
+│   ├── Credential.php      # Credential management
+│   └── ...
+├── Services/              # Business logic services
+│   ├── Execution/         # Execution services
+│   ├── Node/              # Node registry
+│   └── ...
+├── Nodes/                 # Node implementation
+│   ├── Actions/           # Action nodes (HTTP, Email, etc.)
+│   ├── Triggers/          # Trigger nodes (Webhook, Schedule, etc.)
+│   ├── Logic/             # Logic nodes (If, Switch, etc.)
+│   └── ...
+├── Http/                  # Controllers, Resources, Requests
+├── Jobs/                  # Queue jobs for workflow execution
+├── Events/                # Event system
+└── Console/               # Artisan commands
+```
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+## 🏷️ Key Endpoints
 
-### Premium Partners
+- `POST /api/v1/workflows` - Create workflows
+- `GET /api/v1/workflows` - List workflows
+- `POST /api/v1/workflows/{id}/execute` - Execute workflows
+- `GET /api/v1/executions` - View execution history
+- `POST /webhook/{id}` - Public webhook endpoints
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+## 🔐 Authentication
 
-## Contributing
+The API uses Laravel Passport for OAuth2 authentication. All endpoints except webhook endpoints require authentication using a Bearer token.
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+```bash
+Authorization: Bearer {your-access-token}
+Accept: application/json
+Content-Type: application/json
+```
 
-## Code of Conduct
+## 🛠️ Tools & Utilities
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+- **Postman Collection**: Complete API collection for easy testing
+- **Queue Worker Script**: Shell script to start workflow queue workers
 
-## Security Vulnerabilities
+## 📄 License
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+MIT License - Feel free to use and modify for your projects.
 
-## License
+## 🤝 Contributing
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Add tests if applicable
+5. Submit a pull request
