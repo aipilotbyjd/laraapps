@@ -8,6 +8,8 @@ use App\Policies\OrganizationPolicy;
 use App\Policies\TeamPolicy;
 use App\Models\Invitation;
 use App\Policies\InvitationPolicy;
+use App\Models\Credential;
+use App\Policies\CredentialPolicy;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 
 class AuthServiceProvider extends ServiceProvider
@@ -21,6 +23,7 @@ class AuthServiceProvider extends ServiceProvider
         Organization::class => OrganizationPolicy::class,
         Team::class => TeamPolicy::class,
         Invitation::class => InvitationPolicy::class,
+        Credential::class => CredentialPolicy::class,
     ];
 
     /**

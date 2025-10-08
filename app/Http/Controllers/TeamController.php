@@ -13,7 +13,7 @@ class TeamController extends Controller
     {
         $this->authorize('viewAny', [Team::class, $organization]);
 
-        return TeamResource::collection($organization->teams);
+        return TeamResource::collection($organization->teams()->with(['owner', 'members'])->get());
     }
 
     public function store(Request $request, Organization $organization)

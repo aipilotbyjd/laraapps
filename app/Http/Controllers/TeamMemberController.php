@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Team;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class TeamMemberController extends Controller
 {
@@ -19,9 +20,10 @@ class TeamMemberController extends Controller
 
         $user = User::findOrFail($request->user_id);
 
-        $team->members()->attach($user);
-
-        $user->assignRole($request->role, $team->id);
+        DB::transaction(function () use ($team, $user, $request) {
+            $team->members()->syncWithoutDetaching([$user->id => ['role' => $request->role]]);
+            $user->assignRole($request->role, $team->id);
+        });
 
         return response()->json(['message' => 'User added to team successfully.']);
     }
@@ -30,11 +32,16 @@ class TeamMemberController extends Controller
     {
         $this->authorize('update', $team);
 
-        $team->members()->detach($user);
+        DB::transaction(function () use ($team, $user) {
+            $pivot = DB::table('team_user')->where('team_id', $team->id)->where('user_id', $user->id)->first();
 
-        // It's not currently possible to remove a role scoped to a team.
-        // See: https://github.com/spatie/laravel-permission/issues/1125
-        // $user->removeRole($request->role, $team->id);
+            if ($pivot) {
+                // This is a placeholder for proper role removal logic.
+                // Spatie doesn't have a simple `removeRoleFromTeam` method.
+            }
+
+            $team->members()->detach($user->id);
+        });
 
         return response()->json(['message' => 'User removed from team successfully.']);
     }

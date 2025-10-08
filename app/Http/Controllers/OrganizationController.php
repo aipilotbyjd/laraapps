@@ -12,7 +12,7 @@ class OrganizationController extends Controller
     {
         $this->authorize('viewAny', Organization::class);
 
-        return OrganizationResource::collection(auth()->user()->organizations()->get());
+        return OrganizationResource::collection(auth()->user()->organizations()->with(['owner', 'users', 'teams'])->get());
     }
 
     public function store(Request $request)
