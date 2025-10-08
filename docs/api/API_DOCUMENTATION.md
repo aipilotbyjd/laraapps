@@ -6,7 +6,113 @@ This document provides comprehensive documentation for the n8n Clone API. All en
 
 ## 🔐 Authentication
 
-All API endpoints require Bearer Token authentication via Laravel Passport:
+The API uses Laravel Passport for OAuth2 authentication. Most endpoints require authentication using a Bearer token, but authentication endpoints are public.
+
+### Public Authentication Endpoints
+
+#### Register User
+```http
+POST /api/auth/register
+```
+
+**Request Body:**
+```json
+{
+  "name": "string, required",
+  "email": "string, required, valid email",
+  "password": "string, required, min 8 chars",
+  "password_confirmation": "string, required, must match password"
+}
+```
+
+**Response:**
+```json
+{
+  "user": {
+    "id": 1,
+    "name": "John Doe",
+    "email": "john@example.com",
+    "created_at": "2023-01-01T10:00:00Z",
+    "updated_at": "2023-01-01T10:00:00Z"
+  },
+  "access_token": "token_string",
+  "token_type": "Bearer",
+  "expires_at": "2023-01-01T11:00:00Z"
+}
+```
+
+#### Login User
+```http
+POST /api/auth/login
+```
+
+**Request Body:**
+```json
+{
+  "email": "string, required, valid email",
+  "password": "string, required, min 8 chars"
+}
+```
+
+**Response:**
+```json
+{
+  "user": {
+    "id": 1,
+    "name": "John Doe",
+    "email": "john@example.com",
+    "created_at": "2023-01-01T10:00:00Z",
+    "updated_at": "2023-01-01T10:00:00Z"
+  },
+  "access_token": "token_string",
+  "token_type": "Bearer",
+  "expires_at": "2023-01-01T11:00:00Z"
+}
+```
+
+#### Logout User
+```http
+POST /api/auth/logout
+```
+
+**Headers:**
+```
+Authorization: Bearer {your-access-token}
+Accept: application/json
+Content-Type: application/json
+```
+
+**Response:**
+```json
+{
+  "message": "Successfully logged out"
+}
+```
+
+#### Refresh Token
+```http
+POST /api/auth/refresh
+```
+
+**Headers:**
+```
+Authorization: Bearer {your-access-token}
+Accept: application/json
+Content-Type: application/json
+```
+
+**Response:**
+```json
+{
+  "access_token": "new_token_string",
+  "token_type": "Bearer",
+  "expires_at": "2023-01-01T12:00:00Z"
+}
+```
+
+### Protected Endpoints
+
+All other endpoints require the Bearer token in the Authorization header:
 
 ```
 Authorization: Bearer {your-access-token}

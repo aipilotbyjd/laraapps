@@ -29,9 +29,9 @@
               "raw": "{\n    \"name\": \"John Doe\",\n    \"email\": \"john@example.com\",\n    \"password\": \"password\",\n    \"password_confirmation\": \"password\"\n}"
             },
             "url": {
-              "raw": "{{base_url}}/api/register",
+              "raw": "{{base_url}}/api/auth/register",
               "host": ["{{base_url}}"],
-              "path": ["api", "register"]
+              "path": ["api", "auth", "register"]
             }
           },
           "response": []
@@ -55,9 +55,9 @@
               "raw": "{\n    \"email\": \"john@example.com\",\n    \"password\": \"password\"\n}"
             },
             "url": {
-              "raw": "{{base_url}}/api/login",
+              "raw": "{{base_url}}/api/auth/login",
               "host": ["{{base_url}}"],
-              "path": ["api", "login"]
+              "path": ["api", "auth", "login"]
             },
             "description": "Get access token for API authentication via Passport"
           },
@@ -68,10 +68,96 @@
               "script": {
                 "exec": [
                   "var jsonData = pm.response.json();",
-                  "pm.environment.set(\"access_token\", jsonData.access_token);",
+                  "if(jsonData.access_token) {",
+                  "    pm.environment.set(\"access_token\", jsonData.access_token);",
+                  "    pm.test(\"Status code is 200\", function () {",
+                  "        pm.response.to.have.status(200);",
+                  "    });",
+                  "} else {",
+                  "    pm.test(\"Login failed\", function () {",
+                  "        pm.expect(jsonData).to.have.property('message');",
+                  "    });",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Logout User",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/auth/logout",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "logout"]
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
                   "pm.test(\"Status code is 200\", function () {",
                   "    pm.response.to.have.status(200);",
-                  "});"
+                  "});",
+                  "",
+                  "pm.environment.unset(\"access_token\");"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Refresh Token",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/auth/refresh",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "refresh"]
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "if(jsonData.access_token) {",
+                  "    pm.environment.set(\"access_token\", jsonData.access_token);",
+                  "    pm.test(\"Status code is 200\", function () {",
+                  "        pm.response.to.have.status(200);",
+                  "    });",
+                  "} else {",
+                  "    pm.test(\"Refresh failed\", function () {",
+                  "        pm.expect(jsonData).to.have.property('message');",
+                  "    });",
+                  "}"
                 ],
                 "type": "text/javascript"
               }
@@ -96,36 +182,6 @@
               "raw": "{{base_url}}/api/user",
               "host": ["{{base_url}}"],
               "path": ["api", "user"]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "Create Personal Access Token",
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Accept",
-                "value": "application/json"
-              },
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              },
-              {
-                "key": "Authorization",
-                "value": "Bearer {{access_token}}"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n    \"name\": \"My Token\",\n    \"scopes\": [\"*\"]\n}"
-            },
-            "url": {
-              "raw": "{{base_url}}/api/tokens",
-              "host": ["{{base_url}}"],
-              "path": ["api", "tokens"]
             }
           },
           "response": []

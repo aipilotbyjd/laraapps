@@ -22,7 +22,7 @@ class Tag extends Model
 
     public function workflows(): BelongsToMany
     {
-        return $this->belongsToMany(Workflow::class);
+        return $this->belongsToMany(Workflow::class, 'workflow_tag');
     }
 
     public function user(): BelongsTo

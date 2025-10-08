@@ -11,17 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('tags', function (Blueprint $table) {
+        Schema::create('teams', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('color')->default('#1f77b4');
-            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('organization_id')->constrained()->onDelete('cascade');
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->timestamps();
-            
-            $table->unique(['name', 'user_id']);
         });
-
-        // Note: workflow_tag pivot table is created in its own migration
     }
 
     /**
@@ -29,7 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('tags');
-        // workflow_tag pivot table will be dropped by its own migration
+        Schema::dropIfExists('teams');
     }
 };

@@ -29,6 +29,8 @@ class WorkflowController extends Controller
 
     public function store(StoreWorkflowRequest $request)
     {
+        $this->authorize('create', Workflow::class);
+        
         $workflow = Workflow::create([
             'name' => $request->name,
             'description' => $request->description,
@@ -81,5 +83,68 @@ class WorkflowController extends Controller
             'execution_id' => $execution->id,
             'status' => $execution->status,
         ]);
+    }
+
+    public function duplicate(Workflow $workflow)
+    {
+        $this->authorize('duplicate', $workflow);
+        
+        $duplicated = $workflow->replicate();
+        $duplicated->name = $workflow->name . ' (Copy)';
+        $duplicated->user_id = auth()->id();
+        $duplicated->save();
+        
+        // Also duplicate the versions
+        foreach ($workflow->versions as $version) {
+            $duplicatedVersion = $version->replicate();
+            $duplicatedVersion->workflow_id = $duplicated->id;
+            $duplicatedVersion->save();
+        }
+        
+        return new WorkflowResource($duplicated);
+    }
+
+    public function activate(Workflow $workflow)
+    {
+        $this->authorize('activate', $workflow);
+        
+        $workflow->update(['active' => true]);
+        
+        return response()->json([
+            'message' => 'Workflow activated successfully'
+        ]);
+    }
+
+    public function deactivate(Workflow $workflow)
+    {
+        $this->authorize('deactivate', $workflow);
+        
+        $workflow->update(['active' => false]);
+        
+        return response()->json([
+            'message' => 'Workflow deactivated successfully'
+        ]);
+    }
+
+    public function versions(Workflow $workflow)
+    {
+        $this->authorize('view', $workflow);
+        
+        return response()->json($workflow->versions()->latest()->get());
+    }
+
+    public function restoreVersion(Request $request, Workflow $workflow, $versionId)
+    {
+        $this->authorize('update', $workflow);
+        
+        $version = $workflow->versions()->findOrFail($versionId);
+        
+        $workflow->update([
+            'nodes' => $version->nodes,
+            'connections' => $version->connections,
+            'settings' => $version->settings,
+        ]);
+        
+        return new WorkflowResource($workflow);
     }
 }

@@ -11,6 +11,7 @@ Welcome to the comprehensive documentation for the n8n Clone workflow automation
 ### 🚀 Getting Started
 - [Installation Guide](guides/SETUP_INSTALLATION.md) - Step-by-step installation instructions
 - [Quick Start](guides/quick-start.md) - Quick start guide
+- [Workflow Execution Guide](guides/workflow-execution-guide.md) - Complete workflow execution walkthrough
 
 ### ⚙️ Configuration
 - [Environment Configuration](configuration/ENVIRONMENT_CONFIGURATION.md) - Complete environment variable reference
@@ -62,8 +63,9 @@ docs/
 2. Review the [Environment Configuration](configuration/ENVIRONMENT_CONFIGURATION.md) for setup options
 3. Explore the [Node Documentation](nodes/WORKFLOW_NODES.md) to understand available workflow components
 4. Use the [API Documentation](api/API_DOCUMENTATION.md) to integrate with your applications
-5. Import the [Postman Collection](tools/n8n-clone-postman-collection.json) to test APIs easily
-6. Use the [Queue Worker Script](tools/start-queue-workers.sh) for production deployments
+5. Follow the [Workflow Execution Guide](guides/workflow-execution-guide.md) to learn how to run workflows properly
+6. Import the [Postman Collection](tools/n8n-clone-postman-collection.json) to test APIs easily
+7. Use the [Queue Worker Script](tools/start-queue-workers.sh) for production deployments
 
 ## 🤝 Contributing
 
